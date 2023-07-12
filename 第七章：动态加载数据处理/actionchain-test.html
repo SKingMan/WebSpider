@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>矩形拖动</title>
+    <style>
+      #rectangle1 {
+        position: absolute;
+        top: 300px;
+        left: 300px;
+        width: 40px;
+        height: 30px;
+        background-color: green;
+        cursor: move;
+      }
+
+      #rectangle2 {
+        position: absolute;
+        top: 340px;
+        left: 300px;
+        width: 340px;
+        height: 30px;
+        background-color: red;
+        cursor: move;
+      }
+    </style>
+</head>
+<body>
+<div id="rectangle1"></div>
+<div id="rectangle2"></div>
+
+<script>
+      var rectangle1 = document.getElementById("rectangle1");
+      var rectangle2 = document.getElementById("rectangle2");
+
+      var initialX1, initialY1, initialX2, initialY2;
+
+      var activeRectangle;
+
+      rectangle1.addEventListener("mousedown", dragStart);
+      rectangle2.addEventListener("mousedown", dragStart);
+
+      function dragStart(event) {
+        initialX1 = event.clientX - rectangle1.offsetLeft;
+        initialY1 = event.clientY - rectangle1.offsetTop;
+        initialX2 = event.clientX - rectangle2.offsetLeft;
+        initialY2 = event.clientY - rectangle2.offsetTop;
+
+        if (event.target === rectangle1) {
+          activeRectangle = rectangle1;
+        } else if (event.target === rectangle2) {
+          activeRectangle = rectangle2;
+        }
+
+        document.addEventListener("mousemove", dragMove);
+        document.addEventListener("mouseup", dragEnd);
+      }
+
+      function dragMove(event) {
+        if (activeRectangle) {
+          event.preventDefault();
+
+          var currentX = event.clientX - initialX1;
+          var currentY = event.clientY - initialY1;
+          var currentX2 = event.clientX - initialX2;
+          var currentY2 = event.clientY - initialY2;
+
+          if (activeRectangle === rectangle1) {
+            activeRectangle.style.left = currentX + "px";
+            activeRectangle.style.top = currentY + "px";
+          } else if (activeRectangle === rectangle2) {
+            activeRectangle.style.left = currentX2 + "px";
+            activeRectangle.style.top = currentY2 + "px";
+          }
+        }
+      }
+
+      function dragEnd(event) {
+        activeRectangle = null;
+
+        document.removeEventListener("mousemove", dragMove);
+        document.removeEventListener("mouseup", dragEnd);
+      }
+    </script>
+</body>
+</html>

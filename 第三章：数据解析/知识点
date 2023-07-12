@@ -1,0 +1,83 @@
+
+
+
+
+
+
+bs4进行数据解析
+    --数据解析原理:
+        --1.标签定位
+        --2.提取标签、标签属性中存储的数据值
+    --bs4数据解析原理:
+        --1.实例化一个BeautifulSoup对象，并且将页面源码数据加载到该对象中
+        --2.通过调用BeautifulSoup中对象属性和方法进行标签定位和数据提取
+    如何实例化BeautifulSoup对象：
+    -- from bs4 import  BeautifulSoup
+    --对象的实例化：
+        --1.将本地的html文档汇总的数据加载到该对象中
+                fp = open('./test.html','r',encoding='utf-8')
+                soup = BeautifulSoup(fp,'lxml')
+        --2.将互联网上获取的页面源码加载到该对象中
+                page_text = response.text
+                soup = BeautifulSoup(page_text,'lxml')
+    - 提供的用于数据解析的方法和属性:
+        --soup.tagName:返回的是文档中第一次出现的tagName对应的标签
+        --soup.find():
+            -- find('tagName'):等同于soup.div#也是返回第一次出现的tagName
+            -- 属性定位:
+                -soup.find('div',class_='song')#通过标签定位到对应的标签里
+        --soup.findall('tagName'):返回符合要求的所有标签
+    - select:
+        - select('某种选择器（id，class，标签...选择器)')#,返回的是一个列表，可以是表情名比如div，ur，li，可以是属性值，比如
+                                                    #class的值，这个叫做 类选择器
+        - 层级选择器：
+                - soup.select('.tange > ur > li >a'): >表示的是一个层级
+                - soup.select('.tang > ul a')#:空格表示的是多个层级,也就是说用空格可以跨越层级，比如这里就没有使用li标签，
+                                            # 而是直接到a标签
+    - 获取标签之间的文本数据
+        - soup.a.text/string/get_text()
+        - text/get_text():可以获取某一个标签中所有的文本内容
+        - string：只可以获取该标签下面直系的文本内容
+    - 获取标签中属性值：
+        - soup.a['href']
+
+
+
+Xpath解析：最常用且最便捷高效的一种解析方式。通用性最强。
+    - xpath解析原理
+        1.实例化一个etree的对象，且需要将被解析的页面源码数据加载到对象中
+        2.调用etree对象中的xpath方法结合着xpath表达式实现标签的定位和内容的捕获
+    - 环境安装：pip install lxml
+    - 如何实例化一个etree对象：from lxml import etree
+        - 1.将本地的html文件中的源码数据加载到etree对象中：
+            etree.paras(filepath)
+        -2.可以将互联网上获取的源码数据加载到该对象中
+            etree.HTML('page_text')
+        xpath('xpath表达式')
+    - xpath表达式
+        - /:表示的是从根节点开始定位。表示的是一个层级。
+        - //:表示的是多个层级。可以表示从任意位置开始定位。比如放到最左边
+        - 属性定位： //div[@class='song'] tab[@attrName="attrValue"]
+        - 索引定位：//div[@class="song"]/p[3] 索引是从1开始的。
+        - 取文本
+            - /text() 获取的是标签中直系的文本内容
+            - //text() 标签中非直系的文本内容（所有的文本内容）
+        -取属性
+            /@attrName  例如：img/@src
+        - 多个xpath表达式，比如想要获取热门城市和全部城市，标签层级不一样，无法通过一个xpath表达式获取全部城市
+            - 可以这样写：xpath('xpath表达式 | xpath表达式')  中间用一个或的连接符 | 表示满足其中一个表达式即可。
+
+    数据解析时，中文出现乱码的问题：
+        --1.修改response的encoding属性，response.encoding = 'utf-8'
+        --2.img_name.encond('iso-8859-1').decode('gbk'),这里的img_name是字符串。
+    xpath定位的注意事项：
+    https://blog.csdn.net/hujie243303098/article/details/78550338?locationNum=11&fps=1
+    1.不要使用带有空格的属性
+
+    2.不要使用自动生成的id、class 等
+
+    3.使用firebug会事半功倍
+
+    4 .定位时一定要找到唯一的属性要确保定位的唯一性，根据唯一的属性进行各种定位
+
+    5.查看是否存在frame
